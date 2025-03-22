@@ -17,7 +17,7 @@ Note: If you can't build it, you can't use it. GG's! 🎮
 sh
 Copy
 Edit
-git clone https://github.com/your-repo/Auto-Editor.git
+git clone [https://github.com/your-repo/Auto-Editor.git](https://github.com/Real-Dr-Unknown/Auto-Editor-Extremely-Fast.git)
 cd Auto-Editor
 3️⃣ Build the project (Follow the build instructions).
 4️⃣ Run the tool and enjoy seamless video processing!
