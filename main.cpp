@@ -43,21 +43,27 @@ int main() {
     cout << "Enter the video file path: ";
     getline(cin, videoFile);
 
-    int cutBefore, cutAfter;
+    int cutBefore, cutAfter, sectoskip;
     cout << "Enter cut duration before detection in seconds (recommended 30 sec): ";
     cin >> cutBefore;
     cout << "Enter cut duration after detection in seconds (recommended 10 sec): ";
     cin >> cutAfter;
+    cout << "Enter Sec to Skip (recommended 2 sec): ";
+    cin >> sectoskip;
 
     VideoCapture video(videoFile);
     if (!video.isOpened()) {
         cerr << "Error opening video file!" << endl;
+        cout << "Press Enter to exit\n";
+        cin >> sectoskip;
         return -1;
     }
 
     Mat target = cv::imread("target.png", IMREAD_GRAYSCALE);
     if (target.empty()) {
         cerr << "Error: Could not load target image!" << endl;
+        cout << "Press Enter to exit\n";
+        cin >> sectoskip;
         return -1;
     }
 
@@ -76,9 +82,9 @@ int main() {
     auto startTime = chrono::high_resolution_clock::now();
 
     while (currentFrame < totalFrames) {
-        video.set(CAP_PROP_POS_FRAMES, currentFrame); // Jump to the next second
+        video.set(CAP_PROP_POS_FRAMES, currentFrame);
         if (!video.read(frame)) {
-            break; // Stop if we reach the end or cannot read the frame
+            break;
         }
 
         showProgressBar(currentFrame, totalFrames);
@@ -92,7 +98,7 @@ int main() {
             log << "Detected at: " << detectedTime << " sec (Frame: " << currentFrame << ")\n";
         }
 
-        currentFrame += frameRate; // Move to the next second
+        currentFrame += (sectoskip * frameRate);
     }
 
     video.release();
@@ -135,11 +141,14 @@ int main() {
     cout << "\nTrimming video and audio together..." << endl;
     if (system(trimCommand.c_str()) != 0) {
         cerr << "Error trimming video & audio!" << endl;
+        cout << "Press Enter to exit\n";
+        cin >> sectoskip;
         return -1;
     }
 
     cout << "\nProcessing complete! Final video with audio saved as " << finalVideoWithAudio << endl;
     cout << "Detection log saved as " << logFile << endl;
-
+    cout << "Press Enter to exit\n";
+    cin >> sectoskip;
     return 0;
 }
